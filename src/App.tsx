@@ -17,7 +17,7 @@ import {
 } from "wagmi";
 
 import { sealedBidAbi } from "../contracts/SealedBid.artifact.js";
-import { CONTRACT_DEPLOYED, EXPLORER_URL, SEALEDBID_ADDRESS, TESTNET_CHAIN_ID } from "./config.js";
+import { CONTRACT_DEPLOYED, DEPLOY_BLOCK, EXPLORER_URL, SEALEDBID_ADDRESS, TESTNET_CHAIN_ID } from "./config.js";
 import {
   computeCommitment,
   generateKemKeypair,
@@ -107,7 +107,15 @@ function WindowStatus({ address, chainId }: { address: `0x${string}`; chainId: n
 // On-chain shapes (viem returns struct getters as positional tuples)
 // ---------------------------------------------------------------------------
 
-/** auctions tuple: [auctioneer, item, kemKeyHash, biddingDeadline, revealDeadline, minBid, highestBid, highestBidder, finalized, bidders] */
+/**
+ * auctions tuple: [auctioneer, item, kemKeyHash, biddingDeadline, revealDeadline,
+ * minBid, highestBid, highestBidder, finalized].
+ *
+ * NOTE: Solidity's auto-generated getter for a struct containing a
+ * dynamically-sized array does NOT return that array — `bidders` is absent
+ * from the getter's outputs, so it must be read via the explicit
+ * `getBidders(auctionId)` view function instead (see AuctionCard).
+ */
 type AuctionTuple = readonly [
   Address,
   string,
@@ -118,7 +126,6 @@ type AuctionTuple = readonly [
   bigint,
   Address,
   boolean,
-  readonly Address[],
 ];
 
 interface AuctionView {
@@ -132,7 +139,6 @@ interface AuctionView {
   highestBid: bigint;
   highestBidder: Address;
   finalized: boolean;
-  bidders: readonly Address[];
 }
 
 function parseAuction(id: bigint, t: AuctionTuple): AuctionView {
@@ -147,7 +153,6 @@ function parseAuction(id: bigint, t: AuctionTuple): AuctionView {
     highestBid: t[6],
     highestBidder: t[7],
     finalized: t[8],
-    bidders: t[9],
   };
 }
 
@@ -294,6 +299,15 @@ function AuctionCard({
     args: [auctionId, account ?? "0x0000000000000000000000000000000000000000"],
     query: { enabled: account !== undefined, refetchInterval: 5000 },
   });
+  // The `auctions` getter omits the bidders array (see AuctionTuple note),
+  // so read it through the explicit view function.
+  const { data: biddersData } = useReadContract({
+    address: SEALEDBID_ADDRESS as Address,
+    abi: sealedBidAbi,
+    functionName: "getBidders",
+    args: [auctionId],
+    query: { refetchInterval: 5000 },
+  });
 
   const write = useWriteContract();
   const receipt = useWaitForTransactionReceipt({ hash: write.data });
@@ -329,7 +343,7 @@ function AuctionCard({
           anonymous: false,
         },
         args: { auctionId },
-        fromBlock: 0n,
+        fromBlock: DEPLOY_BLOCK,
         toBlock: "latest",
       });
       if (logs.length === 0) return null;
@@ -353,6 +367,7 @@ function AuctionCard({
 
   if (!rawAuction || phaseData === undefined) return null;
   const auction = parseAuction(auctionId, rawAuction as unknown as AuctionTuple);
+  const bidders: readonly Address[] = biddersData ?? [];
   const phase = Number(phaseData) as 0 | 1 | 2;
   const hasBid = hasBidData === true;
   const biddingEndsMs = Number(auction.biddingDeadline) * 1000;
@@ -455,7 +470,7 @@ function AuctionCard({
         {phase === 1 && pastRevealDeadline && <>· reveal closed, awaiting finalisation</>}
       </p>
       <p>
-        Minimum bid: {auction.minBid.toString()} uqor · Bids: {auction.bidders.length}
+        Minimum bid: {auction.minBid.toString()} uqor · Bids: {bidders.length}
         {auction.highestBid > 0n && (
           <>
             {" "}
@@ -483,9 +498,9 @@ function AuctionCard({
             : " (WARNING: public key does NOT match the hash)"
           : " (reading public key…)"}
       </p>
-      {auction.bidders.length > 0 && (
+      {bidders.length > 0 && (
         <ul>
-          {auction.bidders.map((b) => (
+          {bidders.map((b) => (
             <BidRow
               key={b}
               auction={auction}
@@ -730,9 +745,9 @@ export function App() {
         ML-KEM-1024 (FIPS 203) to the auctioneer&apos;s chain-registered public key — only
         ciphertext goes on-chain, so bids stay sealed until the reveal phase.
       </p>
-      <p>
+      <div>
         <ConnectButton />
-      </p>
+      </div>
       {wrongChain && (
         <p>
           You are on the wrong network.{" "}

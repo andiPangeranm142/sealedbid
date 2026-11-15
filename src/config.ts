@@ -20,3 +20,12 @@ export const SEALEDBID_ADDRESS: `0x${string}` | "" = isAddress(raw)
   : "";
 
 export const CONTRACT_DEPLOYED = SEALEDBID_ADDRESS !== "";
+
+/**
+ * Block the SealedBid contract was deployed in (deploy tx
+ * 0x192e900b95562d4cab25bda35a83feba8cdad241495090ed2e6ec7821486ba7e).
+ * The contract cannot have emitted events before this block, so event-log
+ * scans start here instead of block 0 (the chain has 10M+ blocks and a
+ * full scan takes far too long in the browser).
+ */
+export const DEPLOY_BLOCK = 10151543n;

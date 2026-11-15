@@ -209,15 +209,17 @@ async function main(): Promise<void> {
   })) as bigint;
   const auctionId = auctionCount - 1n;
   console.log(`auction id: ${auctionId}`);
-  // viem returns struct getters as positional tuples:
+  // viem returns struct getters as positional tuples. NOTE: Solidity's
+  // auto-generated getter omits the `bidders` array (it is not in the
+  // getter's outputs at all), so the tuple has 9 elements:
   // [auctioneer, item, kemKeyHash, biddingDeadline, revealDeadline, minBid,
-  //  highestBid, highestBidder, finalized, bidders]
+  //  highestBid, highestBidder, finalized]
   const auction = (await publicClient.readContract({
     address: contract,
     abi: sealedBidAbi,
     functionName: "auctions",
     args: [auctionId],
-  })) as unknown as [Address, string, Hex, bigint, bigint, bigint, bigint, Address, boolean, Address[]];
+  })) as unknown as [Address, string, Hex, bigint, bigint, bigint, bigint, Address, boolean];
   if (auction[2] !== kemPublicKeyHash(kemPublicKey)) {
     throw new Error("Auction KEM hash does not match the registered key");
   }
