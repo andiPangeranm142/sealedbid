@@ -5,7 +5,7 @@ import {
   qorechainTestnet,
 } from "@qorechain/evm";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { hexToBytes, parseEventLogs, toHex, type Address, type Hex } from "viem";
 import {
   useAccount,
@@ -178,6 +178,29 @@ function parseBid(t: BidTuple): BidView {
 }
 
 const PHASE_NAMES = ["Bidding", "Revealing", "Finalized"] as const;
+
+/**
+ * Explicit fee caps and gas limits for every transaction the UI sends.
+ * The chain's fee market is volatile — viem's uncapped estimate spiked to
+ * ~2000–6000 gwei during testing, and a window admits a transaction only
+ * when `gasLimit x maxFeePerGas` fits its remaining value, so uncapped
+ * transactions were rejected with "gas required exceeds allowance". The
+ * base fee sits at ~100 gwei, so a 150 gwei cap leaves headroom while
+ * keeping the max fee of a sealed bid (1.5M gas x 150 gwei = 0.225 QOR)
+ * affordable. Gas limits are ceilings, not charges: a sealed bid actually
+ * uses ~1.37M gas (storing the 1568-byte ML-KEM ciphertext dominates the
+ * cost).
+ */
+const TX_FEES = {
+  maxFeePerGas: 150_000_000_000n, // 150 gwei
+  maxPriorityFeePerGas: 12_500_000_000n, // 12.5 gwei
+} as const;
+const TX_GAS = {
+  createAuction: 700_000n,
+  submitBid: 1_500_000n,
+  revealBid: 250_000n,
+  finalize: 200_000n,
+} as const;
 
 // ---------------------------------------------------------------------------
 // Browser key storage (testnet demo only — see the honest-notes footer)
@@ -417,6 +440,8 @@ function AuctionCard({
       abi: sealedBidAbi,
       functionName: "submitBid",
       args: [auctionId, toHex(sealed.kemCiphertext), toHex(sealed.sealedBid), commitment],
+      gas: TX_GAS.submitBid,
+      ...TX_FEES,
     });
   };
 
@@ -443,6 +468,8 @@ function AuctionCard({
       abi: sealedBidAbi,
       functionName: "revealBid",
       args: [auctionId, BigInt(amountStr), salt as Hex],
+      gas: TX_GAS.revealBid,
+      ...TX_FEES,
     });
   };
 
@@ -453,6 +480,8 @@ function AuctionCard({
       abi: sealedBidAbi,
       functionName: "finalize",
       args: [auctionId],
+      gas: TX_GAS.finalize,
+      ...TX_FEES,
     });
   };
 
@@ -644,6 +673,8 @@ function CreateAuction({ account, onCreated }: { account: Address; onCreated: ()
       abi: sealedBidAbi,
       functionName: "createAuction",
       args: [item.trim(), pubKeyHex.trim() as Hex, BigInt(biddingSecs), BigInt(revealSecs), min],
+      gas: TX_GAS.createAuction,
+      ...TX_FEES,
     });
   };
 
@@ -721,8 +752,13 @@ export function App() {
   const { address, chainId, isConnected } = useAccount();
   const { switchChain } = useSwitchChain();
   const queryClient = useQueryClient();
-  const [refreshKey, setRefreshKey] = useState(0);
-  const onChanged = () => setRefreshKey((k) => k + 1);
+  // Refresh on-chain data after a transaction confirms. This used to bump
+  // a refreshKey baked into the card keys — which remounted the cards and
+  // wiped the "Confirmed." state. Never key a card on anything that changes
+  // when a transaction lands.
+  const onChanged = useCallback(() => {
+    void queryClient.invalidateQueries();
+  }, [queryClient]);
 
   const { data: auctionCount } = useReadContract({
     address: SEALEDBID_ADDRESS as Address,
@@ -773,7 +809,7 @@ export function App() {
       )}
 
       {CONTRACT_DEPLOYED && isConnected && address && !wrongChain && (
-        <CreateAuction key={`create-${refreshKey}`} account={address} onCreated={onChanged} />
+        <CreateAuction account={address} onCreated={onChanged} />
       )}
       {CONTRACT_DEPLOYED && !isConnected && (
         <p>Connect a wallet to create auctions, bid, and reveal. You can browse auctions below without one.</p>
@@ -786,8 +822,15 @@ export function App() {
       )}
       {CONTRACT_DEPLOYED &&
         auctionIds.map((id) => (
+          // The key MUST stay stable across transactions: the receipt effect
+          // calls onChanged(), and if the key changed with it the card would
+          // remount the moment a transaction confirmed, wiping the
+          // useWriteContract state that renders "Confirmed." (this bit the
+          // demo recording on 15 Nov 2026 — the reveal landed on-chain but
+          // the confirmation text never survived a frame). Data refreshes
+          // via queryClient.invalidateQueries(), not via remounting.
           <AuctionCard
-            key={`${id.toString()}-${refreshKey}`}
+            key={id.toString()}
             auctionId={id}
             account={address}
             onChanged={onChanged}

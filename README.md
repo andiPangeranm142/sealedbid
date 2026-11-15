@@ -154,6 +154,36 @@ the demo UI. Registration and windows are native-lane operations; the demo
 UI cannot do them from the browser, so it tells the user to open a window
 from QoreX.
 
+### Lessons from the testnet (things that bit us)
+
+- **Cap your fees explicitly.** The chain's fee market is volatile: viem's
+  uncapped `maxFeePerGas` estimate spiked to ~2000–6000 gwei during
+  testing, and a window admits a transaction only when
+  `gasLimit x maxFeePerGas` fits its remaining value — so uncapped bids
+  were rejected with `gas required exceeds allowance`. The UI and scripts
+  set an explicit 150 gwei cap (base fee sits at ~100 gwei) and explicit
+  gas limits. A sealed bid uses ~1.37M gas, mostly storing the 1568-byte
+  ML-KEM ciphertext; budget 1.5M gas per bid.
+- **A window's value is shared across its transactions**, and opening one
+  costs ~0.1 QOR in native gas (hybrid-signature verification is
+  expensive). Size windows for the fees of every transaction they must
+  admit, and reuse a live window instead of opening a fresh one per run.
+- **The `auctions` getter omits `bidders`.** Solidity's auto-generated
+  getter for a struct containing a dynamically-sized array does not return
+  that array — reading `auctions(...)[9]` is `undefined` and crashed the
+  UI. Read the bidder list through the explicit `getBidders(auctionId)`
+  view function.
+- **Keep React keys stable across transactions.** The receipt effect calls
+  `onChanged()`; when the card key included a refresh counter, the card
+  remounted the moment a transaction confirmed and wiped the
+  `useWriteContract` state — the transaction landed on-chain but
+  "Confirmed." never survived a frame. Refresh data with
+  `queryClient.invalidateQueries()`, never by remounting.
+- **Vite's proxy ignores `https_proxy`.** In sandboxed networks the
+  `/lcd-*` proxy must route through the egress proxy explicitly (an
+  `HttpsProxyAgent` in `vite.config.ts`), or every window-status request
+  fails with a TLS "wrong version number" error.
+
 ## Project layout
 
 ```
