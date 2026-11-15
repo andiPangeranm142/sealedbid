@@ -115,6 +115,34 @@ bids off-chain and the decrypted amounts are checked against the on-chain
 reveals. Every transaction hash is recorded in
 [`deployments/e2e.json`](deployments/e2e.json).
 
+## Live auctions on Diana
+
+14 auctions exist on-chain (ids 0–13), all readable live in the demo.
+State below was verified against the contract on 16 Nov 2026 (~05:05 WIB):
+
+| Id | Item | Bids | Highest revealed | Status |
+| --- | --- | --- | --- | --- |
+| 0 | SealedBid live demo lot — testnet auction #1 | 2 | 2,500,000 uqor | Finalised, winner `0x5893…f264` (the E2E run above) |
+| 1–3 | SealedBid demo lot — video auction | 0 | — | Reveal deadline passed, no bids |
+| 4 | gas-estimate test lot | 0 | — | Reveal deadline passed, no bids |
+| 5 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Reveal closed, awaiting finalisation |
+| 6 | SealedBid demo lot — video auction | 0 | — | Finalised, no winner |
+| 7 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
+| 8 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Reveal closed, awaiting finalisation |
+| 9 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
+| 10 | SealedBid demo lot #2 | 0 | — | Second auctioneer (`0x6B4B…7573`, video wallet), no bids |
+| 11 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
+| 12 | SealedBid demo lot #2 | 1 | — | Second auctioneer; one (self-)bid, unrevealed |
+| 13 | **Q-Day Drill lot — SealedBid drill auction (testnet)** | 0 | — | **Bidding open until 20 Nov 2026 00:00 UTC**, reveal until 21 Nov 00:00 UTC, min bid 100,000 uqor |
+
+Auction 13 is the lot for the fest's **Q-Day Drill**: the project is
+registered for the drill (bidder `qor1tmuncvh3c7suszmrx88767slurjalhqq8zzg62`,
+ML-DSA-registered, funded), and the drill-day bid (500,000 uqor, sealed
+exactly like the E2E flow) is scripted in
+[`scripts/drill-bid.ts`](scripts/drill-bid.ts) for 18 Nov 2026. The bid
+transaction hash from that run is the drill proof submitted on the project
+page.
+
 ## Development
 
 Prerequisites: Node.js 20+, npm. The deployer account is a fresh
@@ -195,6 +223,8 @@ scripts/window.ts           PQC registration + EVM window management
 scripts/register-kem.ts     Auctioneer KEM keypair + x/pqc registry publication
 scripts/deploy.ts           Deployment + deployment record
 scripts/e2e.ts              Full on-chain auction run + evidence record
+scripts/drill-bid.ts        Q-Day Drill day bid on auction 13 (18 Nov 2026)
+scripts/render-check.mjs    Playwright render check for the live demo
 scripts/fund.ts             Native QOR funding helper
 test/kem.test.ts            Crypto unit tests
 test/sealedbid.test.ts      Contract tests on a local Ganache chain
