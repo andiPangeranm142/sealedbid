@@ -133,15 +133,16 @@ State below was verified against the contract on 16 Nov 2026 (~05:05 WIB):
 | 10 | SealedBid demo lot #2 | 0 | — | Second auctioneer (`0x6B4B…7573`, video wallet), no bids |
 | 11 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
 | 12 | SealedBid demo lot #2 | 1 | — | Second auctioneer; one (self-)bid, unrevealed |
-| 13 | **Q-Day Drill lot — SealedBid drill auction (testnet)** | 0 | — | **Bidding open until 20 Nov 2026 00:00 UTC**, reveal until 21 Nov 00:00 UTC, min bid 100,000 uqor |
+| 13 | **Q-Day Drill lot — SealedBid drill auction (testnet)** | 1 | — | **Drill bid placed** (commitment `0xf397e69b…37ed5d`); **bidding open until 20 Nov 2026 00:00 UTC**, reveal until 21 Nov 00:00 UTC, min bid 100,000 uqor |
 
 Auction 13 is the lot for the fest's **Q-Day Drill**: the project is
 registered for the drill (bidder `qor1tmuncvh3c7suszmrx88767slurjalhqq8zzg62`,
 ML-DSA-registered, funded), and the drill-day bid (500,000 uqor, sealed
-exactly like the E2E flow) is scripted in
-[`scripts/drill-bid.ts`](scripts/drill-bid.ts) for 18 Nov 2026. The bid
-transaction hash from that run is the drill proof submitted on the project
-page.
+exactly like the E2E flow) was placed on 18 Nov 2026 via
+[`scripts/drill-bid.ts`](scripts/drill-bid.ts) — EVM tx
+`0xed0ad902…1ead8d` (Cosmos `F5ADB01D…71CA0`, block 10286602), recorded in
+[`deployments/drill-bid.json`](deployments/drill-bid.json). That
+transaction hash is the drill proof submitted on the project page.
 
 ## Development
 
