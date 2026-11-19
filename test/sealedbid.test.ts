@@ -405,4 +405,126 @@ describe("SealedBid contract", () => {
     assert.equal(auction[6], 0n); // highestBid
     assert.equal(auction[7], "0x0000000000000000000000000000000000000000"); // highestBidder
   });
+
+  it("rejects a second finalise of the same auction", async () => {
+    const { auctionId } = await createAuction({ bidding: 30, reveal: 30 });
+    await advanceTime(clients, 61);
+    const hash = await clients.wallet.writeContract({
+      address: contract, abi: sealedBidAbi, functionName: "finalize",
+      args: [auctionId], account: auctioneer, chain: localChain,
+    });
+    assert.equal((await clients.public.waitForTransactionReceipt({ hash })).status, "success");
+    await assert.rejects(
+      clients.wallet.writeContract({
+        address: contract, abi: sealedBidAbi, functionName: "finalize",
+        args: [auctionId], account: bidder1, chain: localChain,
+      }),
+    );
+  });
+
+  it("rejects finalise, bid and reveal on an auction that does not exist", async () => {
+    const count = (await clients.public.readContract({
+      address: contract, abi: sealedBidAbi, functionName: "auctionCount",
+    })) as bigint;
+    const missing = count + 100n;
+    await assert.rejects(
+      clients.wallet.writeContract({
+        address: contract, abi: sealedBidAbi, functionName: "finalize",
+        args: [missing], account: auctioneer, chain: localChain,
+      }),
+    );
+    const keypair = generateKemKeypair();
+    const salt = randomSalt();
+    const sealed = sealBid(keypair.publicKey, { amount: "100", salt });
+    await assert.rejects(
+      clients.wallet.writeContract({
+        address: contract, abi: sealedBidAbi, functionName: "submitBid",
+        args: [missing, toHex(sealed.kemCiphertext), toHex(sealed.sealedBid),
+          computeCommitment(100n, salt, bidder1.address)],
+        account: bidder1, chain: localChain,
+      }),
+    );
+    await assert.rejects(
+      clients.wallet.writeContract({
+        address: contract, abi: sealedBidAbi, functionName: "revealBid",
+        args: [missing, 100n, salt], account: bidder1, chain: localChain,
+      }),
+    );
+  });
+
+  it("rejects a reveal after the reveal deadline", async () => {
+    const { auctionId, keypair } = await createAuction({ bidding: 30, reveal: 30 });
+    const bid = await submitSealedBid(auctionId, bidder1, keypair, 100n);
+    await advanceTime(clients, 61); // past both deadlines
+    await assert.rejects(
+      clients.wallet.writeContract({
+        address: contract, abi: sealedBidAbi, functionName: "revealBid",
+        args: [auctionId, 100n, bid.salt], account: bidder1, chain: localChain,
+      }),
+    );
+    // The unrevealed bid does not count: finalise still yields no winner.
+    const hash = await clients.wallet.writeContract({
+      address: contract, abi: sealedBidAbi, functionName: "finalize",
+      args: [auctionId], account: auctioneer, chain: localChain,
+    });
+    assert.equal((await clients.public.waitForTransactionReceipt({ hash })).status, "success");
+    const auction = (await clients.public.readContract({
+      address: contract, abi: sealedBidAbi, functionName: "auctions", args: [auctionId],
+    })) as unknown as [Address, string, Hex, bigint, bigint, bigint, bigint, Address, boolean, Address[]];
+    assert.equal(auction[7], "0x0000000000000000000000000000000000000000");
+  });
+
+  it("rejects a reveal from an address that never bid", async () => {
+    const { auctionId, keypair } = await createAuction({ bidding: 30, reveal: 30 });
+    await submitSealedBid(auctionId, bidder1, keypair, 100n);
+    await advanceTime(clients, 31);
+    await assert.rejects(
+      clients.wallet.writeContract({
+        address: contract, abi: sealedBidAbi, functionName: "revealBid",
+        args: [auctionId, 100n, randomSalt()], account: bidder2, chain: localChain,
+      }),
+    );
+  });
+
+  it("rejects auctions with zero bidding or reveal durations", async () => {
+    const keypair = generateKemKeypair();
+    await assert.rejects(
+      clients.wallet.writeContract({
+        address: contract, abi: sealedBidAbi, functionName: "createAuction",
+        args: ["No bidding", toHex(keypair.publicKey), 0n, 3600n, 0n],
+        account: auctioneer, chain: localChain,
+      }),
+    );
+    await assert.rejects(
+      clients.wallet.writeContract({
+        address: contract, abi: sealedBidAbi, functionName: "createAuction",
+        args: ["No reveal", toHex(keypair.publicKey), 3600n, 0n, 0n],
+        account: auctioneer, chain: localChain,
+      }),
+    );
+  });
+
+  it("finalise is callable by anyone, not just the auctioneer", async () => {
+    // A bystander (bidder3, who never bid on this auction) finalises it.
+    const { auctionId, keypair } = await createAuction({ bidding: 30, reveal: 30 });
+    const bid = await submitSealedBid(auctionId, bidder1, keypair, 100n);
+    await advanceTime(clients, 31);
+    const revealHash = await clients.wallet.writeContract({
+      address: contract, abi: sealedBidAbi, functionName: "revealBid",
+      args: [auctionId, 100n, bid.salt], account: bidder1, chain: localChain,
+    });
+    assert.equal((await clients.public.waitForTransactionReceipt({ hash: revealHash })).status, "success");
+    await advanceTime(clients, 31);
+    const finHash = await clients.wallet.writeContract({
+      address: contract, abi: sealedBidAbi, functionName: "finalize",
+      args: [auctionId], account: bidder3, chain: localChain,
+    });
+    const receipt = await clients.public.waitForTransactionReceipt({ hash: finHash });
+    assert.equal(receipt.status, "success");
+    const auction = (await clients.public.readContract({
+      address: contract, abi: sealedBidAbi, functionName: "auctions", args: [auctionId],
+    })) as unknown as [Address, string, Hex, bigint, bigint, bigint, bigint, Address, boolean, Address[]];
+    assert.equal(auction[8], true); // finalized
+    assert.equal(auction[7].toLowerCase(), bidder1.address.toLowerCase());
+  });
 });

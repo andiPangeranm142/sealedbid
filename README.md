@@ -13,7 +13,8 @@ commitment submitted with the sealed bid.
 - **Live demo:** https://andipangeranm142.github.io/sealedbid/
 - **Contract (Diana testnet):** `0xefffcd16d4977a3e58340aeee20b10b2e723c585`
   ([explorer](https://explore.qore.network/address/0xefffcd16d4977a3e58340aeee20b10b2e723c585) — switch to Testnet)
-- **Demo video:** [`docs/demo.mp4`](docs/demo.mp4) (≤3 min, real screen recording)
+- **Demo video:** [`docs/demo.mp4`](docs/demo.mp4) (≤3 min, real screen recording —
+  auction 14's 2-of-3 threshold opening + the finalised auctions)
 
 ## How it works
 
@@ -58,6 +59,12 @@ for the auctioneer).
   holds the ML-KEM secret key and can decrypt any bid at any time — the seal
   hides bids from other bidders and the public, not from the auctioneer.
   The auctioneer is trusted not to leak bids early or to front-run them.
+  **Auction 14 removes this single point of trust** with a 2-of-3 threshold
+  opening ceremony: its secret key was split with Shamir secret sharing and
+  never stored whole, so no single auctioneer can open its bids — any 2 of
+  the 3 keyholders can. The threshold is an **off-chain ceremony**, not
+  on-chain enforcement (the contract cannot enforce it — see
+  [Threshold opening](#threshold-opening-auction-14)).
 - **The auctioneer cannot misreport an amount.** The winner is decided only
   from on-chain reveals, each verified against the bidder's own commitment.
   Decrypted amounts are for display and audit only.
@@ -92,6 +99,39 @@ than the REST registry, because the chain's REST endpoints send no CORS
 headers and the demo is served from GitHub Pages. The event carries the full
 key; the hash check is what makes that copy trustworthy.
 
+### Threshold opening (auction 14)
+
+The deployed contract **cannot** enforce threshold opening on-chain:
+`createAuction()` takes exactly one ML-KEM-1024 public key, the contract
+never decrypts anything, and there is no keyholder or threshold logic in it
+at all. On-chain enforcement would need a redeploy, which would orphan 14
+auctions of history — so it is **not** done. Instead, auction 14 uses a
+dedicated threshold keypair and an honest **off-chain ceremony** (full
+details in [`docs/threshold-ceremony.md`](docs/threshold-ceremony.md)):
+
+- A fresh ML-KEM-1024 keypair was generated **in memory** for auction 14.
+- Its 3168-byte secret key was split **2-of-3 with Shamir secret sharing**
+  over GF(2^8) (`src/lib/threshold.ts`); the 3 shares live mode 600 outside
+  the repo. **The full secret key was never written to disk** — no single
+  party holds it, and the auctioneer cannot decrypt auction 14's bids alone.
+- The public key is published in the `AuctionCreated` event and bound
+  on-chain by the auction's `kemKeyHash`. It is **not** in the `x/pqc`
+  registry (the registry holds one key per account, and the auctioneer's
+  registered key must stay in place for auctions 0–13); bidders verify the
+  event key against the on-chain hash before sealing.
+- Opening: any 2 of the 3 keyholders run
+  `npx tsx scripts/threshold-open.ts 14 <shareA> <shareB>` — the shares
+  reconstruct the key (verified against the recorded keccak256 commitment)
+  and open every sealed bid, with each decrypted amount checked against its
+  on-chain reveal. One share alone reveals nothing (information-theoretic —
+  tested in `test/threshold.test.ts`).
+
+Demonstrated live on Diana: auction 14 ran end-to-end (3 sealed bids,
+all revealed, finalised, winner bidder-2 at 2,500,000 uqor) and the
+ceremony opened all 3 bids from shares 2 + 3, with every decrypted amount
+matching its on-chain reveal. Evidence:
+[`deployments/threshold-auction14.json`](deployments/threshold-auction14.json).
+
 ## Live deployment (Diana testnet)
 
 - Contract: `0xefffcd16d4977a3e58340aeee20b10b2e723c585`
@@ -115,25 +155,43 @@ bids off-chain and the decrypted amounts are checked against the on-chain
 reveals. Every transaction hash is recorded in
 [`deployments/e2e.json`](deployments/e2e.json).
 
+Auction 14 repeats the same end-to-end flow with a **threshold auctioneer**
+(see [Threshold opening](#threshold-opening-auction-14)): three bidders seal
+1,000,000 / 1,750,000 / 2,500,000 uqor to the threshold key, all reveal, the
+auction finalises with bidder-2 winning at 2,500,000 uqor, and the sealed
+bids are opened by the 2-of-3 ceremony. Run it with
+`npx tsx --env-file=.env scripts/threshold-auction.ts` (needs a live
+deployer window and funded bidders — see the script header); evidence in
+[`deployments/threshold-auction14.json`](deployments/threshold-auction14.json).
+
 ## Live auctions on Diana
 
-14 auctions exist on-chain (ids 0–13), all readable live in the demo.
-State below was verified against the contract on 16 Nov 2026 (~05:05 WIB):
+15 auctions exist on-chain (ids 0–14), all readable live in the demo.
+State below was verified against the contract on 19 Nov 2026 (~17:42 WIB).
+Every auction is finalised except the Q-Day Drill lot (13), whose bidding
+is still open:
 
 | Id | Item | Bids | Highest revealed | Status |
 | --- | --- | --- | --- | --- |
 | 0 | SealedBid live demo lot — testnet auction #1 | 2 | 2,500,000 uqor | Finalised, winner `0x5893…f264` (the E2E run above) |
-| 1–3 | SealedBid demo lot — video auction | 0 | — | Reveal deadline passed, no bids |
-| 4 | gas-estimate test lot | 0 | — | Reveal deadline passed, no bids |
-| 5 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Reveal closed, awaiting finalisation |
+| 1–3 | SealedBid demo lot — video auction | 0 | — | Finalised 19 Nov 2026, no winner |
+| 4 | gas-estimate test lot | 0 | — | Finalised 19 Nov 2026, no winner |
+| 5 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised 19 Nov 2026, winner `0x5893…f264` |
 | 6 | SealedBid demo lot — video auction | 0 | — | Finalised, no winner |
 | 7 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
-| 8 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Reveal closed, awaiting finalisation |
+| 8 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised 19 Nov 2026, winner `0x5893…f264` |
 | 9 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
-| 10 | SealedBid demo lot #2 | 0 | — | Second auctioneer (`0x6B4B…7573`, video wallet), no bids |
+| 10 | SealedBid demo lot #2 | 0 | — | Finalised 19 Nov 2026, no winner |
 | 11 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
-| 12 | SealedBid demo lot #2 | 1 | — | Second auctioneer; one (self-)bid, unrevealed |
+| 12 | SealedBid demo lot #2 | 1 | — | Finalised 19 Nov 2026, no winner (bid never revealed) |
 | 13 | **Q-Day Drill lot — SealedBid drill auction (testnet)** | 1 | — | **Drill bid placed** (commitment `0xf397e69b…37ed5d`); **bidding open until 20 Nov 2026 00:00 UTC**, reveal until 21 Nov 00:00 UTC, min bid 100,000 uqor |
+| 14 | **SealedBid threshold lot — 2-of-3 opening (testnet)** | 3 | 2,500,000 uqor | **Finalised, winner `0x5893…f264`**; opened 2-of-3 (see [Threshold opening](#threshold-opening-auction-14)) |
+
+The 19 Nov 2026 finalisations (auctions 1–5, 8, 10, 12) were called by
+`scripts/finalize.ts` from the deployer account — `finalize()` is callable
+by anyone — and each was verified afterwards by re-reading the auction
+state. Transaction hashes and blocks:
+[`deployments/finalize.json`](deployments/finalize.json).
 
 Auction 13 is the lot for the fest's **Q-Day Drill**: the project is
 registered for the drill (bidder `qor1tmuncvh3c7suszmrx88767slurjalhqq8zzg62`,
@@ -219,18 +277,26 @@ from QoreX.
 contracts/SealedBid.sol     The auction contract (rules + storage, no crypto)
 contracts/SealedBid.artifact.ts  ABI + bytecode, generated by `npm run compile`
 src/lib/kem.ts              Client-side ML-KEM-1024 + AES-GCM sealing (browser + Node)
+src/lib/threshold.ts        Shamir 2-of-3 secret sharing over GF(2^8) (threshold ceremony)
 src/App.tsx                 React demo (browse / create / bid / reveal / finalise)
 scripts/window.ts           PQC registration + EVM window management
 scripts/register-kem.ts     Auctioneer KEM keypair + x/pqc registry publication
 scripts/deploy.ts           Deployment + deployment record
 scripts/e2e.ts              Full on-chain auction run + evidence record
+scripts/threshold-auction.ts  Auction 14: threshold keypair, 3 bids, reveal, finalise, 2-of-3 opening
+scripts/threshold-open.ts   Standalone 2-of-3 opening ceremony for an auction
+scripts/threshold-ceremony.ts  Share-file IO + open-an-auction helpers (no main)
+scripts/finalize.ts         Finalise old auctions past their reveal deadline (never auction 13)
+scripts/state-check.ts      Read-only dump of on-chain auction state
 scripts/drill-bid.ts        Q-Day Drill day bid on auction 13 (18 Nov 2026)
 scripts/render-check.mjs    Playwright render check for the live demo
 scripts/fund.ts             Native QOR funding helper
 test/kem.test.ts            Crypto unit tests
+test/threshold.test.ts      Shamir + threshold opening tests (incl. 1-share-insufficient)
 test/sealedbid.test.ts      Contract tests on a local Ganache chain
-deployments/                Live deployment + E2E evidence (testnet.json, e2e.json)
+deployments/                Live deployment + E2E/threshold/finalize evidence
 docs/demo.mp4               Demo video (real screen recording, ≤3 min)
+docs/threshold-ceremony.md  Threshold opening: what is and is not enforced
 docs/featured.png           Featured image for the fest project page
 ```
 
@@ -240,8 +306,10 @@ docs/featured.png           Featured image for the fest project page
   bids), losers are refunded at finalisation, and the winner's funds go to
   the auctioneer.
 - Non-reveal penalties (e.g. a small bond forfeited when a bid is not revealed).
-- Threshold decryption: split the ML-KEM secret key so no single auctioneer
-  can read bids early.
+- On-chain threshold enforcement (e.g. a threshold KEM key registered in
+  `x/pqc` with the contract verifying keyholder openings) — needs a contract
+  redeploy, which would orphan the auction history, so it is not planned;
+  the off-chain ceremony (auction 14) is the implemented answer.
 
 ## Credits
 

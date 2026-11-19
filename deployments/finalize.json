@@ -1,0 +1,79 @@
+{
+  "contract": "0xefffcd16d4977a3e58340aeee20b10b2e723c585",
+  "finalizedBy": "0xB5e7E335226D56Ca2Bd38FDEb18169A8C004185E",
+  "finalizedAt": "2026-11-19T10:12:53.717Z",
+  "results": [
+    {
+      "auctionId": "1",
+      "action": "finalized",
+      "finalizeTx": "0x291f862e4104fb3bc2170e52a113310a229ca0990970b1f46bd1fb6be9e04ca8",
+      "finalizeBlock": "10368355",
+      "finalizeTxCosmos": "45DE42A0867DC8CB25644C7F631E921FD5E7CB2B85ABF7EB05FD1AFC09B159D0",
+      "winner": null,
+      "winningBidUqor": "0"
+    },
+    {
+      "auctionId": "2",
+      "action": "finalized",
+      "finalizeTx": "0xa9e9e5ce7099416af7269f2b25f18ddf65d110a65008096e27fd4971daddcffa",
+      "finalizeBlock": "10368357",
+      "finalizeTxCosmos": "16E306907A44BE519B7626A1949D3C8F43B980DCF82C5FFB75F12DAEE494F3B5",
+      "winner": null,
+      "winningBidUqor": "0"
+    },
+    {
+      "auctionId": "3",
+      "action": "finalized",
+      "finalizeTx": "0xf5b3f0605b7d11abed3c6558d5c59a930288418c29b466e52217ad5227ee251c",
+      "finalizeBlock": "10368359",
+      "finalizeTxCosmos": "E06D97394A7BF089685A888377DFEE51E196BACAE72A6351C0D728D7CA305B95",
+      "winner": null,
+      "winningBidUqor": "0"
+    },
+    {
+      "auctionId": "4",
+      "action": "finalized",
+      "finalizeTx": "0x4123b60099d16889d95610f1f6f03e37c90ad0d4810d6dbf82651f57de5f1bf9",
+      "finalizeBlock": "10368361",
+      "finalizeTxCosmos": "7089A0B15363876ECE72842D2A32EC91EFA95BAF437C34620BD15FE246DAD8FF",
+      "winner": null,
+      "winningBidUqor": "0"
+    },
+    {
+      "auctionId": "5",
+      "action": "finalized",
+      "finalizeTx": "0x96f07ebd72a1e32cc006e9767629c908521ff8eb4e61bb128b83157189a624eb",
+      "finalizeBlock": "10368363",
+      "finalizeTxCosmos": "0CA41A6DBE56E36BADA21F16132A9407D4B1D3C0EB30A24ADFD7E7342F3F062E",
+      "winner": "0x5893Ce49Fc741298A58DaAB792Db4eCC5209f264",
+      "winningBidUqor": "2500000"
+    },
+    {
+      "auctionId": "8",
+      "action": "finalized",
+      "finalizeTx": "0xfc7ad8d45d2ffedaab3b7785a0b56691e520a8461b101b04d715549192b56eed",
+      "finalizeBlock": "10368365",
+      "finalizeTxCosmos": "A7E4B4EF521DBC8C84DCEDF07A655AE06B557FB79972D5A81833EB4C50FE1BF9",
+      "winner": "0x5893Ce49Fc741298A58DaAB792Db4eCC5209f264",
+      "winningBidUqor": "2500000"
+    },
+    {
+      "auctionId": "10",
+      "action": "finalized",
+      "finalizeTx": "0x9732f35bd476fe06c6fc3031c319e8303887318cf4f8915ba206ae23f4863b61",
+      "finalizeBlock": "10368367",
+      "finalizeTxCosmos": "AC3B84E07A7A4CDACEE58BAA2DDFC0D3ED05585D9ACB050B3EBE0F724E256D81",
+      "winner": null,
+      "winningBidUqor": "0"
+    },
+    {
+      "auctionId": "12",
+      "action": "finalized",
+      "finalizeTx": "0xa93fb2b4e35d97c2d44b50ff8c621624b292d363c06ad2c9e5657a49c706a046",
+      "finalizeBlock": "10368369",
+      "finalizeTxCosmos": "7A4D391C88750AF4F29B1DD770830A017BD5D4C7C447FA115DD3610DBF80A997",
+      "winner": null,
+      "winningBidUqor": "0"
+    }
+  ]
+}

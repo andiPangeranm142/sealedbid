@@ -853,6 +853,14 @@ export function App() {
             only from on-chain reveals, each checked against the bidder&apos;s own commitment.
           </li>
           <li>
+            <strong>Threshold opening (auction 14).</strong> Auction 14 uses a dedicated 2-of-3
+            threshold key: its secret key was split with Shamir secret sharing and never stored
+            whole, so no single auctioneer can open its bids — any 2 of the 3 keyholders can.
+            The threshold is an off-chain ceremony (the contract cannot enforce it); the key is
+            bound on-chain by the auction&apos;s key hash and published in its creation event,
+            not in the x/pqc registry. See the README.
+          </li>
+          <li>
             <strong>Keys in this browser.</strong> A keypair generated here keeps its secret key in
             this browser&apos;s local storage, and each bid&apos;s reveal salt is stored the same
             way. That is fine for a testnet demo and unacceptable for real stakes — clear your
