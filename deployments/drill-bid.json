@@ -1,1 +1,25 @@
-{"action":"drill-bid","amountUqor":500000,"auctionId":13,"bidder":"0x5EF93C32F1C7A1C80b6331CFEd7a1Fe0e5DfdC00","bidderCosmos":"qor1tmuncvh3c7suszmrx88767slurjalhqq8zzg62","biddingEnds":"2026-11-20T00:00:00Z","block":10286602,"chainId":9800,"commitment":"0xf397e69bce9b8cfecabec289a914f2ea359a70ac71dc683a45c5d422bc37ed5d","contract":"0xefffcd16d4977a3e58340aeee20b10b2e723c585","cosmosTx":"F5ADB01DF124DA9793B45B558CB7AB8A77944BAD07F2FAA5D99DCB0380271CA0","drillDay":"2026-11-18","evmTx":"0xed0ad902048d30649f04bccc5c27e039d1a09a89ab11d7e166b6aa08271ead8d","network":"qorechain-diana","note":"Q-Day Drill proof transaction for SealedBid (auction 13). The bid secret is NOT in this file; it lives only in a mode-600 file outside the repo.","revealEnds":"2026-11-21T00:00:00Z"}
+{
+  "action": "drill-bid+reveal",
+  "amountUqor": 500000,
+  "auctionId": 13,
+  "bidder": "0x5EF93C32F1C7A1C80b6331CFEd7a1Fe0e5DfdC00",
+  "bidderCosmos": "qor1tmuncvh3c7suszmrx88767slurjalhqq8zzg62",
+  "biddingEnds": "2026-11-20T00:00:00Z",
+  "block": 10286602,
+  "chainId": 9800,
+  "commitment": "0xf397e69bce9b8cfecabec289a914f2ea359a70ac71dc683a45c5d422bc37ed5d",
+  "contract": "0xefffcd16d4977a3e58340aeee20b10b2e723c585",
+  "cosmosTx": "F5ADB01DF124DA9793B45B558CB7AB8A77944BAD07F2FAA5D99DCB0380271CA0",
+  "drillDay": "2026-11-18",
+  "evmTx": "0xed0ad902048d30649f04bccc5c27e039d1a09a89ab11d7e166b6aa08271ead8d",
+  "network": "qorechain-diana",
+  "note": "Q-Day Drill proof transaction for SealedBid (auction 13). The bid secret is NOT in this file; it lives only in a mode-600 file outside the repo.",
+  "revealEnds": "2026-11-21T00:00:00Z",
+  "revealTx": "0x427541b5fcacbc7ef97981250ef64952c4a8c14cf5d7549f625f83b8b231b756",
+  "revealTxCosmos": "20972024211AD251C314E2DC1E67DF513116895CD006BFD9EE41696CF70F862F",
+  "revealBlock": 10402837,
+  "revealedAmountUqor": 500000,
+  "revealedAt": "2026-11-20T00:32:58.019Z",
+  "decryptedAmountUqor": 500000,
+  "windowOpenTxCosmos": "7E36AA1E693D40FDA28FEC39BD9FE93631837A7EBFCAA61BF0CD834388405CCF"
+}
