@@ -1,0 +1,15 @@
+{
+  "action": "drill-finalize",
+  "auctionId": 13,
+  "contract": "0xefffcd16d4977a3e58340aeee20b10b2e723c585",
+  "finalizedBy": "0xB5e7E335226D56Ca2Bd38FDEb18169A8C004185E",
+  "finalizedAt": "2026-11-21T00:29:59.948Z",
+  "finalizeTx": "0xbcc5fa489ea8a70cd033dc1e43394d4bf286d8526adbfc0e1535d7f7a024c1f3",
+  "finalizeBlock": "10463064",
+  "finalizeTxCosmos": "C4B447C17ACD03FC2E0DD1D134F6E88084B2F850E7EF210B76AD8B0A3866A69B",
+  "cosmosBlock": "10463064",
+  "winner": "0x5EF93C32F1C7A1C80b6331CFEd7a1Fe0e5DfdC00",
+  "winningBidUqor": "500000",
+  "revealTx": "0x427541b5fcacbc7ef97981250ef64952c4a8c14cf5d7549f625f83b8b231b756",
+  "revealTxCosmos": "20972024211AD251C314E2DC1E67DF513116895CD006BFD9EE41696CF70F862F"
+}
