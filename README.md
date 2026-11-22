@@ -167,9 +167,8 @@ deployer window and funded bidders — see the script header); evidence in
 ## Live auctions on Diana
 
 15 auctions exist on-chain (ids 0–14), all readable live in the demo.
-State below was verified against the contract on 19 Nov 2026 (~17:42 WIB).
-Every auction is finalised except the Q-Day Drill lot (13), whose bidding
-is still open:
+State below was verified against the contract on 21 Nov 2026.
+All 15 auctions are finalised, including the Q-Day Drill lot (13):
 
 | Id | Item | Bids | Highest revealed | Status |
 | --- | --- | --- | --- | --- |
@@ -184,7 +183,7 @@ is still open:
 | 10 | SealedBid demo lot #2 | 0 | — | Finalised 19 Nov 2026, no winner |
 | 11 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
 | 12 | SealedBid demo lot #2 | 1 | — | Finalised 19 Nov 2026, no winner (bid never revealed) |
-| 13 | **Q-Day Drill lot — SealedBid drill auction (testnet)** | 1 | — | **Drill bid placed** (commitment `0xf397e69b…37ed5d`); **bidding open until 20 Nov 2026 00:00 UTC**, reveal until 21 Nov 00:00 UTC, min bid 100,000 uqor |
+| 13 | **Q-Day Drill lot — SealedBid drill auction (testnet)** | 1 | 500,000 uqor | **Finalised 21 Nov 2026, winner `0x5EF9…dC00`**; bid revealed 20 Nov 2026 (decryption matched 500,000 uqor) |
 | 14 | **SealedBid threshold lot — 2-of-3 opening (testnet)** | 3 | 2,500,000 uqor | **Finalised, winner `0x5893…f264`**; opened 2-of-3 (see [Threshold opening](#threshold-opening-auction-14)) |
 
 The 19 Nov 2026 finalisations (auctions 1–5, 8, 10, 12) were called by
@@ -200,7 +199,13 @@ exactly like the E2E flow) was placed on 18 Nov 2026 via
 [`scripts/drill-bid.ts`](scripts/drill-bid.ts) — EVM tx
 `0xed0ad902…1ead8d` (Cosmos `F5ADB01D…71CA0`, block 10286602), recorded in
 [`deployments/drill-bid.json`](deployments/drill-bid.json). That
-transaction hash is the drill proof submitted on the project page.
+transaction hash is the drill proof submitted on the project page. The
+drill bid was revealed on 20 Nov 2026 (EVM tx `0x427541b5…1b756`, block
+10402837; the auctioneer's off-chain decryption matched the on-chain
+reveal of 500,000 uqor) and the auction was finalised on 21 Nov 2026
+(EVM tx `0xbcc5fa48…24c1f3`, block 10463064), winner
+`0x5EF93C32F1C7A1C80b6331CFEd7a1Fe0e5DfdC00` at 500,000 uqor — see
+[`deployments/drill-finalize.json`](deployments/drill-finalize.json).
 
 ## Development
 
