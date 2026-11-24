@@ -180,11 +180,13 @@ All 15 auctions are finalised, including the Q-Day Drill lot (13):
 | 7 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
 | 8 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised 19 Nov 2026, winner `0x5893…f264` |
 | 9 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
-| 10 | SealedBid demo lot #2 | 0 | — | Finalised 19 Nov 2026, no winner |
+| 10 | SealedBid demo lot #2 | 0 | — | Finalised 19 Nov 2026, no winner; second auctioneer (video wallet) |
 | 11 | SealedBid demo lot — video auction | 3 | 2,500,000 uqor | Finalised, winner `0x5893…f264` |
-| 12 | SealedBid demo lot #2 | 1 | — | Finalised 19 Nov 2026, no winner (bid never revealed) |
+| 12 | SealedBid demo lot #2 | 1 | — | Finalised 19 Nov 2026, no winner (bid never revealed); second auctioneer (video wallet) |
 | 13 | **Q-Day Drill lot — SealedBid drill auction (testnet)** | 1 | 500,000 uqor | **Finalised 21 Nov 2026, winner `0x5EF9…dC00`**; bid revealed 20 Nov 2026 (decryption matched 500,000 uqor) |
 | 14 | **SealedBid threshold lot — 2-of-3 opening (testnet)** | 3 | 2,500,000 uqor | **Finalised, winner `0x5893…f264`**; opened 2-of-3 (see [Threshold opening](#threshold-opening-auction-14)) |
+
+Auctions 10 and 12 use a second auctioneer: the video wallet (`0x6B4B1a21A2295ede8035447605164d3dd10b7573`), with its own ML-KEM-1024 keypair per auction (the two on-chain key hashes differ).
 
 The 19 Nov 2026 finalisations (auctions 1–5, 8, 10, 12) were called by
 `scripts/finalize.ts` from the deployer account — `finalize()` is callable
