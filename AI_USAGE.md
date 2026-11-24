@@ -38,15 +38,18 @@ began.
    check), and the noble ML-KEM / AES-GCM APIs.
 4. **Verify at every step.** Contract compiled with `solc` 0.8.24;
    artifact regenerated from compiler output by script (never
-   hand-copied); `tsc --noEmit` typecheck; 21 automated tests (contract
-   behaviour on a local EVM + crypto unit tests, including tamper
-   detection); `vite build` for the frontend. On-chain verification was
-   done the same day: the contract deployed at
+   hand-copied); `tsc --noEmit` typecheck; 41 automated tests (contract
+   behaviour on a local EVM + crypto unit tests + threshold-opening
+   tests, including tamper detection); `vite build` for the frontend.
+   On-chain verification was done the same day: the contract deployed at
    `0xefffcd16d4977a3e58340aeee20b10b2e723c585`, the auctioneer's ML-KEM
    public key published in the `x/pqc` registry and read back, and a full
    two-bidder auction run end-to-end on Diana with every transaction hash
-   recorded in `deployments/e2e.json`. Nothing in this repo claims an
-   on-chain result that has not happened.
+   recorded in `deployments/e2e.json`. Since then 15 auctions have been
+   created and all finalized on Diana, including a 2-of-3 threshold
+   ceremony for auction 14 (19 Nov 2026) and the Q-Day Drill lot
+   (auction 13, revealed 20 Nov, finalized 21 Nov). Nothing in this repo
+   claims an on-chain result that has not happened.
 5. **Secrets discipline.** A fresh testnet-only wallet was generated for
    this project; its mnemonic and private key live only in the local,
    git-ignored `.env` (mode 600) and a mode-600 file outside the repo. The
@@ -66,8 +69,21 @@ began.
   registry publication.
 - `scripts/deploy.ts`, `scripts/e2e.ts`, `scripts/fund.ts` — deployment,
   full on-chain auction run, funding helper.
-- `test/sealedbid.test.ts`, `test/kem.test.ts` — contract tests (full
-  auction lifecycle, negative cases) and crypto unit tests.
+- `scripts/threshold-auction.ts`, `scripts/threshold-ceremony.ts`,
+  `scripts/threshold-open.ts` — the threshold auction setup, the Shamir
+  2-of-3 ceremony (auction 14, 19 Nov 2026: the ML-KEM-1024 secret key
+  was split into 3 shares and never written to disk), and share-based
+  bid opening.
+- `scripts/drill-bid.ts`, `scripts/drill-reveal.ts`,
+  `scripts/finalize-drill.ts`, `scripts/finalize.ts`,
+  `scripts/state-check.ts` — the Q-Day Drill bid / reveal / finalize,
+  auction finalization, and on-chain state checks.
+- `test/sealedbid.test.ts`, `test/kem.test.ts` — contract tests (15
+  tests: full auction lifecycle, negative cases) and crypto unit tests
+  (12 tests).
+- `test/threshold.test.ts` — threshold-opening tests (14 tests: 2-of-3
+  shares open a sealed bid, 1 share cannot, tampered shares fail GCM
+  authentication).
 - `src/*` — the React frontend (browse / create / bid / reveal / finalise,
   in-browser encryption, auctioneer local decryption).
 - `scripts/make-cover.py` — the featured-image generator.
@@ -83,12 +99,19 @@ began.
 
 ## Verification
 
-- `npm test` — 21 tests passing (run locally before every deploy).
+- `npm test` — 41 tests passing (15 contract + 12 crypto + 14
+  threshold; run locally before every deploy).
 - `npm run typecheck` — clean.
 - `npm run compile` — solc 0.8.24, 4,916 bytes of bytecode.
 - On-chain: contract deployed on Diana; KEM key registered in `x/pqc` and
   read back (hash matches); full E2E auction verified (see
-  `deployments/e2e.json`).
+  `deployments/e2e.json`); 15 auctions created and all finalized.
+- Threshold ceremony (auction 14, 19 Nov 2026): the ceremony opened all
+  3 bids from shares 2 and 3, with every decrypted amount matching its
+  on-chain reveal (see `deployments/threshold-auction14.json`).
+- Q-Day Drill lot (auction 13): sealed bid submitted on drill day,
+  revealed 20 Nov 2026, finalized 21 Nov 2026 (see
+  `deployments/drill-bid.json`, `deployments/drill-finalize.json`).
 - Live demo render-checked with Playwright after deployment (no console or
   page errors).
 - Demo video: real screen recording of the live demo, duration verified
