@@ -1,0 +1,610 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 6697
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F1 22 Tf
+25.2999999999999972 TL
+0.063 0.725 0.506 rg
+39.6850393700787407 785.1970866141732586 Td
+(QoreChain AI) Tj
+ET
+BT
+/F1 16 Tf
+18.3999999999999986 TL
+0.157 g
+39.6850393700787407 756.8506299212598378 Td
+(Security Audit Report) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.392 g
+39.6850393700787407 728.5041732283464171 Td
+(Generated: 25/11/2026, 21.41.27) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.392 g
+39.6850393700787407 714.3309448818897636 Td
+(Contract Name: SealedBid) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.392 g
+39.6850393700787407 700.15771653543311 Td
+(Blockchain: qorechain) Tj
+ET
+0.78 G
+39.6850393700787407 685.9844881889763428 m
+555.5905511811024553 685.9844881889763428 l
+S
+BT
+/F1 12 Tf
+13.7999999999999989 TL
+0. g
+39.6850393700787407 657.6380314960629221 Td
+(Audit Overview) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+39.6850393700787407 629.291574803149615 Td
+(Overall Security Score: 75/100) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+39.6850393700787407 615.1183464566928478 Td
+(Risk Level: MEDIUM) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+39.6850393700787407 600.9451181102361943 Td
+(Quantum Readiness: QUANTUM-SAFE) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0. g
+39.6850393700787407 586.7718897637794271 Td
+(Total Vulnerabilities: 4) Tj
+ET
+BT
+/F1 12 Tf
+13.7999999999999989 TL
+0. g
+39.6850393700787407 544.2522047244094665 Td
+(Executive Summary) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.235 g
+39.6850393700787407 515.9057480314959321 Td
+(This contract implements a sealed-bid auction mechanism using quantum-safe cryptography \(ML-KEM\). It handles) Tj
+T* (bid submission, revelation, and auction finalization. While designed with quantum resistance in mind, it lacks actual) Tj
+T* (cryptographic implementation and has some medium-level concerns regarding reentrancy and input validation.) Tj
+ET
+0.78 G
+0.5670000000000001 w
+0.78 G
+0.5670000000000001 w
+0.06 0.73 0.51 rg
+0.78 G
+0. w
+0.06 0.73 0.51 rg
+40. 445.0396062992125508 90.463403475784375 -21.4999999999999964 re
+f
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+45. 431.5396062992125508 Td
+(Vulnerability) Tj
+ET
+0.06 0.73 0.51 rg
+0.78 G
+0. w
+0.06 0.73 0.51 rg
+130.4634034757843892 445.0396062992125508 48.6000000000000014 -21.4999999999999964 re
+f
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+135.4634034757843608 431.5396062992125508 Td
+(Severity) Tj
+ET
+0.06 0.73 0.51 rg
+0.78 G
+0. w
+0.06 0.73 0.51 rg
+179.0634034757843835 445.0396062992125508 64.5400000000000063 -21.4999999999999964 re
+f
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+184.0634034757843551 431.5396062992125508 Td
+(Location) Tj
+ET
+0.06 0.73 0.51 rg
+0.78 G
+0. w
+0.06 0.73 0.51 rg
+243.603403475784404 445.0396062992125508 311.6765965241667686 -21.4999999999999964 re
+f
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+248.6034034757843756 431.5396062992125508 Td
+(Recommendation) Tj
+ET
+0.78 G
+0.5670000000000001 w
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 423.5396062992125508 90.463403475784375 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+45. 410.8896062992126303 Td
+(Missing ML-KEM) Tj
+T* (Implementation) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+130.4634034757843892 423.5396062992125508 48.6000000000000014 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+135.4634034757843608 410.8896062992126303 Td
+(HIGH) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+179.0634034757843835 423.5396062992125508 64.5400000000000063 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+184.0634034757843551 410.8896062992126303 Td
+(SealedBid.sol) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+243.603403475784404 423.5396062992125508 311.6765965241667686 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+248.6034034757843756 410.8896062992126303 Td
+(Implement proper verification mechanisms or add explicit warnings about) Tj
+T* (reliance on off-chain decryption.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 392.8396062992125621 90.463403475784375 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+45. 380.1896062992125849 Td
+(Potential) Tj
+T* (Reentrancy Risk) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+130.4634034757843892 392.8396062992125621 48.6000000000000014 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+135.4634034757843608 380.1896062992125849 Td
+(MEDIUM) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+179.0634034757843835 392.8396062992125621 64.5400000000000063 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+184.0634034757843551 380.1896062992125849 Td
+(SealedBid.sol) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+243.603403475784404 392.8396062992125621 311.6765965241667686 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+248.6034034757843756 380.1896062992125849 Td
+(Consider using a more secure pattern like the Checks-Effects-Interactions) Tj
+T* (pattern to prevent potential reentrancy issues.) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+40. 362.1396062992125167 90.463403475784375 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+45. 349.4896062992125962 Td
+(No Bid Amount) Tj
+T* (Validation) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+130.4634034757843892 362.1396062992125167 48.6000000000000014 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+135.4634034757843608 349.4896062992125962 Td
+(LOW) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+179.0634034757843835 362.1396062992125167 64.5400000000000063 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+184.0634034757843551 349.4896062992125962 Td
+(SealedBid.sol) Tj
+ET
+0.96 g
+0.78 G
+0. w
+0.96 g
+243.603403475784404 362.1396062992125167 311.6765965241667686 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+248.6034034757843756 349.4896062992125962 Td
+(Add additional checks for maximum bid limits or other business constraints.) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+40. 331.439606299212528 90.463403475784375 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+45. 318.7896062992125508 Td
+(Missing Input) Tj
+T* (Sanitization) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+130.4634034757843892 331.439606299212528 48.6000000000000014 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+135.4634034757843608 318.7896062992125508 Td
+(INFO) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+179.0634034757843835 331.439606299212528 64.5400000000000063 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+184.0634034757843551 318.7896062992125508 Td
+(SealedBid.sol) Tj
+ET
+1. g
+0.78 G
+0. w
+1. g
+243.603403475784404 331.439606299212528 311.6765965241667686 -30.6999999999999993 re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.314 g
+248.6034034757843756 318.7896062992125508 Td
+(Add input sanitization where appropriate.) Tj
+ET
+0.78 G
+0.5670000000000001 w
+0.78 G
+0. w
+0.78 G
+0.5670000000000001 w
+0.78 G
+0.5670000000000001 w
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.588 g
+227.5977952755905562 19.8427559055116944 Td
+(Page 1 of 1 - Powered by QoreChain AI) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R ]
+/Count 1
+>>
+endobj
+5 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+6 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 5 0 R
+/F2 6 0 R
+/F3 7 0 R
+/F4 8 0 R
+/F5 9 0 R
+/F6 10 0 R
+/F7 11 0 R
+/F8 12 0 R
+/F9 13 0 R
+/F10 14 0 R
+/F11 15 0 R
+/F12 16 0 R
+/F13 17 0 R
+/F14 18 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+19 0 obj
+<<
+/Producer (jsPDF 4.0.0)
+/CreationDate (D:20261125214127+07'00')
+>>
+endobj
+20 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 21
+0000000000 65535 f 
+0000006901 00000 n 
+0000008718 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000006958 00000 n 
+0000007083 00000 n 
+0000007213 00000 n 
+0000007346 00000 n 
+0000007483 00000 n 
+0000007606 00000 n 
+0000007735 00000 n 
+0000007867 00000 n 
+0000008003 00000 n 
+0000008131 00000 n 
+0000008258 00000 n 
+0000008387 00000 n 
+0000008520 00000 n 
+0000008622 00000 n 
+0000008966 00000 n 
+0000009052 00000 n 
+trailer
+<<
+/Size 21
+/Root 20 0 R
+/Info 19 0 R
+/ID [ <FA5F9A24663363235AC73AE2DCD1F1E9> <FA5F9A24663363235AC73AE2DCD1F1E9> ]
+>>
+startxref
+9156
+%%EOF
